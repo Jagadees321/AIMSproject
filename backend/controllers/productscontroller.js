@@ -42,4 +42,37 @@ async function getproductById(req,res){
     }
 }
 
-module.exports = {createproduct,getallproducts,getproductById};
+//update product by product name
+async function updateproduct(req,res){  
+    try {
+        const { productname } = req.body;
+        const updatedProduct = await productsModel.findOneAndUpdate(
+            { productname },//condition
+            req.body,//data to update
+            { new: true }//options
+        );
+        if (!updatedProduct) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+        return res.status(200).json({ message: 'Product updated successfully', updatedProduct });
+    }   catch (error) { 
+        console.error('Error updating product:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
+
+//delete product by id
+async function deleteproduct(req,res){
+    try {
+        let id = req.params.id;
+        const deletedProduct = await productsModel.findByIdAndDelete(id);
+        if (!deletedProduct) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+        return res.status(200).json({ message: 'Product deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error',error });
+    }
+}
+module.exports = {createproduct,getallproducts,getproductById,updateproduct,deleteproduct};

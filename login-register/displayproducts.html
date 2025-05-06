@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        h1
+        {
+            text-align: center;
+            align-content: center;
+            color: #333;
+        }
+        .productcard
+        {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px;
+            width: 300px;
+            display: inline-block;
+            text-align: center;
+            box-shadow: 2px 2px 10px red;
+        }   
+        #container
+        {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Products</h1>
+    <div id="container">
+
+    </div>
+
+    <script>
+        // fetch('http://localhost:4001/api/products')
+        // .then((res)=>res.json())
+        // .then((data)=>console.log(data))
+
+        async function displayproducts() {
+            let res=await fetch('http://localhost:4001/api/products');
+            let data= await res.json();
+            console.log(data.products);
+            let container=document.getElementById('container');
+            data.products.forEach((product) => {
+                let div=document.createElement('div');
+                div.className='productcard';
+                div.innerHTML=`
+                    <h2>${product.productname}</h2>
+                    <p>${product.description}</p>
+                    <p>Price: $${product.price}</p>
+                    <img src="${product.image}" alt="${product.name}" style="width: 200px; height: 200px;">
+                `;
+                container.appendChild(div);
+            });
+        }
+        displayproducts();
+    </script>
+</body>
+</html>
