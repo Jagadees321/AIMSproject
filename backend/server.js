@@ -3,7 +3,7 @@ const connectDB = require('./dbconnection/db');
 const userRoute = require('./router/authroute');
 const cors = require('cors');
 const productRoute = require('./router/productroute');
-
+const cartRoute = require('./router/cartroute');
 
 
 // Connect to MongoDB
@@ -31,7 +31,7 @@ app.get('/api/allproducts', (req, res) => {
 
 app.use('/api', userRoute);
 app.use('/api', productRoute);
-
+app.use('/api', cartRoute);
 
 
 
