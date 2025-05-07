@@ -60,4 +60,35 @@ async function getcartsByuserid(req,res){
     }
 }
 
-module.exports={addtocart,allcarts,getcartsByuserid}
+
+async function updatecart(req,res){
+    try {
+        let id=req.params.id;
+        console.log('point 1');
+        
+        let quantity=req.body.quantity;
+        const cart=await cartmodel.findByIdAndUpdate(id,{quantity:quantity});
+        console.log('point 2');
+        if (!cart) {
+            return res.status(404).json({ message: 'Cart not found' });
+        }
+        return res.status(200).json({ message: 'Cart updated successfully', cart });
+    } catch (error) {
+        console.log('point 3',error);
+        return res.status(500).json({ message: 'Internal server error',error });
+    }
+}
+
+async function deletecart(req,res){
+    try {
+        let id=req.params.id;
+        const cart=await cartmodel.findByIdAndDelete(id);
+        if (!cart) {
+            return res.status(404).json({ message: 'Cart not found' });
+        }
+        return res.status(200).json({ message: 'Cart deleted successfully', cart });
+    } catch (error) {
+        return res.status(500).json({ message: 'Internal server error',error });
+    }
+}
+module.exports={addtocart,allcarts,getcartsByuserid,updatecart,deletecart};

@@ -55,7 +55,7 @@
                     <p>Price: $${product.price}</p>
                     <img src="${product.image}" alt="${product.name}" style="width: 200px; height: 200px;">
                 `;
-                div.addEventListener('click', () => printproduct(product)); // Add click event listener
+                div.addEventListener('click', () => printproduct(product._id)); // Add click event listener
                 container.appendChild(div);
             });
         }
