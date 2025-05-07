@@ -6,7 +6,7 @@ const orderSchema=new mongoose.Schema({
         ref:'User'
     },
     //product of array of objects in object productid quantity
-    productid:[{
+    productids:[{
         productid:{
             type:mongoose.Schema.Types.ObjectId,
             ref:'products'
@@ -56,7 +56,13 @@ const orderSchema=new mongoose.Schema({
     },
     deliverydate:{
         type:Date,
-        default:Date.now
+        //delivery date is 7 days from order date
+        default: function() {
+            const date = new Date();
+            date.setDate(date.getDate() + 7);
+            return date;
+        }
+       
     },
     cancelleddate:{
         type:Date,
@@ -65,7 +71,7 @@ const orderSchema=new mongoose.Schema({
     delivereddate:{
         type:Date,
         default:Date.now
-    },
+    }
 
 },{timestamps:true});
 module.exports=mongoose.model('order',orderSchema);

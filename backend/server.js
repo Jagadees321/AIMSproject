@@ -4,7 +4,7 @@ const userRoute = require('./router/authroute');
 const cors = require('cors');
 const productRoute = require('./router/productroute');
 const cartRoute = require('./router/cartroute');
-
+const orderRoute = require('./router/orderroute');
 
 // Connect to MongoDB
 connectDB();
@@ -32,6 +32,16 @@ app.get('/api/allproducts', (req, res) => {
 app.use('/api', userRoute);
 app.use('/api', productRoute);
 app.use('/api', cartRoute);
+app.use('/api', orderRoute);
+// Handle 404 errors  
+app.use((req, res, next) => {
+    res.status(404).json({ message: 'Route not found' });
+});
+// // Handle 500 errors    
+// app.use((err, req, res, next) => {
+//     console.error(err.stack);
+//     res.status(500).json({ message: 'Internal server error' });
+// });
 
 
 
