@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .productscontainer{
+            display: grid;
+            grid-template-columns: 30% 30% 30%;
+            gap: 1.5%;
+            justify-content: center;
+            align-items: center;
+        }
+        .productcard{
+            height: 60vh;
+            width: 100%;
+            border: 1px solid grey;
+            box-shadow: 2px 2px 20px rgb(49, 102, 193);
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .productcard img{
+            height: 40%;
+            width: 98%;
+            object-fit: contain;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .productcard h2{
+            padding: 0px;
+            margin: 0px;
+            margin-left: 10px;
+            margin-bottom: 10px;
+        }
+        .productcard p{
+            padding: 0px;
+            margin: 0px;
+            margin-left: 10px;
+            margin-bottom: 10px;
+        }
+        .productcard strong{
+            margin-left: 10px;
+            margin-bottom: 10px;
+            width: 90%;
+            border-bottom: 1px solid grey;
+            font-size: 1.2rem;
+
+        }
+        .productcard a{
+            font-size: large;
+            text-align: center;
+            align-content: center;
+        }
+
+        .productsnav{
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            height: 10vh;
+            margin-bottom: 20px;
+            background-color: azure;
+        }
+        .productsnav h2{
+            font-size: 40px;
+        }
+        .productsnav label{
+            position: relative;
+            top: 4%;
+            font-size: 40px;
+        }
+
+        .productsnav label input{
+            padding: 10px;
+        }
+        .productsnav button{
+            background-color: rgb(155, 155, 247);
+            padding: 10px 20px;
+            border-radius: 10px;
+
+        }
+    </style>
+</head>
+<body>
+ <!-- Products Page Content -->
+
+<div class="productsnav">
+    <h2>products</h2>
+   <label for="">Search:
+    <input type="search" placeholder="search for item" id="searchbar">
+   </label>
+    <button>Add product</button>
+
+</div>
+
+<div class="productscontainer" id="productscontainer">
+    
+</div>
+<script src="script.js"></script>
+</body>
+</html>

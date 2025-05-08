@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .authcontainer{
+           
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .login{
+            height: 300px;
+            width: 250px;
+            border: 1px solid grey;
+            box-shadow: 2px 2px 20px rgb(49, 102, 193);
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+          
+        }
+
+
+
+        .auth-form h3{
+            text-align: center;
+            align-content: center;
+          
+        }
+        .auth-form form{
+            width: 85%;
+            display: flex;
+            flex-direction: column;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            
+        }
+        .formfield{
+            display: flex;
+        flex-direction: column;
+        width: 100%;
+        
+        }
+        .formfield label{
+            font-size: 20px;
+            margin: 7px 0px;
+        }
+        .formfield input{
+            padding: 5px;
+            outline: none;
+        }
+        .login button{
+            margin-top: 10px;
+            width: 70%;
+            text-align: center;
+            align-content: center;
+        }
+
+        #authregister{
+            height: 350px;
+            width: 250px;
+            border: 1px solid grey;
+            box-shadow: 2px 2px 20px rgb(49, 102, 193);
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+          
+        }
+
+        #authregister form{
+            width: 85%;
+            display: flex;
+            flex-direction: column;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-left: 10px;
+        }
+
+        .register button{
+            margin-top: 10px;
+            width: 70%;
+            text-align: center;
+            align-content: center;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="authcontainer">
+           <div class="login auth-form" id="authlogin">
+                 <h3>login</h3>
+                 <form action="" onsubmit="login(event)">
+                    <div class="formfield">
+                        <label for="email">Email:</label>
+                        <input type="email" placeholder="example@gmail.com"  " id="email">
+                    </div>
+                    <div class="formfield">
+                        <label for="password">password:</label>
+                        <input type="password" placeholder="type ur password" id="password">
+
+                    </div>
+                    <button>Login</button>
+                    <div class="gotores">
+                        <h5>if u dont have account?<span id="resbtn" onclick="showRegister()">register</span></h5>
+                    </div>
+                 </form>
+           </div>
+
+           <div class="register auth-form" id="authregister" style="display: none;">
+            <h3>Register</h3>
+            <form action="" onsubmit="register(event)">
+                <div class="formfield">
+                    <label for="name">username:</label>
+                    <input type="text" placeholder="type user name" id="name" >
+                </div>
+               <div class="formfield">
+                   <label for="email">Email:</label>
+                   <input type="email" placeholder="example@gmail.com" id="registermail">
+               </div>
+               <div class="formfield">
+                   <label for="password">password:</label>
+                   <input type="password" placeholder="type ur password" id="registerpwd">
+
+               </div>
+               <button>Register</button>
+               <div class="gotores">
+                   <h5>if u dont have account?<a href="" onclick="showLogin()">login</a></h5>
+               </div>
+            </form>
+      </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
