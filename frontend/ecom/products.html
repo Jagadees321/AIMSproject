@@ -3,104 +3,293 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Product Management</title>
     <style>
-        .productscontainer{
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .products-container {
             display: grid;
-            grid-template-columns: 30% 30% 30%;
-            gap: 1.5%;
-            justify-content: center;
-            align-items: center;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
         }
-        .productcard{
-            height: 60vh;
+
+        .product-card {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .product-card img {
             width: 100%;
-            border: 1px solid grey;
-            box-shadow: 2px 2px 20px rgb(49, 102, 193);
+            height: 200px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
             border-radius: 10px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .productcard img{
-            height: 40%;
-            width: 98%;
-            object-fit: contain;
-            margin-top: 10px;
-            margin-bottom: 10px;
-        }
-
-        .productcard h2{
-            padding: 0px;
-            margin: 0px;
-            margin-left: 10px;
-            margin-bottom: 10px;
-        }
-        .productcard p{
-            padding: 0px;
-            margin: 0px;
-            margin-left: 10px;
-            margin-bottom: 10px;
-        }
-        .productcard strong{
-            margin-left: 10px;
-            margin-bottom: 10px;
+            z-index: 1000;
             width: 90%;
-            border-bottom: 1px solid grey;
-            font-size: 1.2rem;
-
-        }
-        .productcard a{
-            font-size: large;
-            text-align: center;
-            align-content: center;
+            max-width: 500px;
         }
 
-        .productsnav{
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            height: 10vh;
-            margin-bottom: 20px;
-            background-color: azure;
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
         }
-        .productsnav h2{
-            font-size: 40px;
+
+        .modal.show, .modal-overlay.show {
+            display: block;
         }
-        .productsnav label{
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+        }
+
+        button {
+            padding: 8px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .add-to-cart {
+            background-color: #28a745;
+            margin-top: 10px;
+        }
+
+        /* Modal styles */
+        .modal-content {
             position: relative;
-            top: 4%;
-            font-size: 40px;
+            padding: 20px;
         }
 
-        .productsnav label input{
-            padding: 10px;
-        }
-        .productsnav button{
-            background-color: rgb(155, 155, 247);
-            padding: 10px 20px;
-            border-radius: 10px;
-
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 20px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
- <!-- Products Page Content -->
+    <div class="notification" id="notification"></div>
+    <header class="header">
+        <h1>Products</h1>
+        <button onclick="openModal()">Add Product</button>
+    </header>
 
-<div class="productsnav">
-    <h2>products</h2>
-   <label for="">Search:
-    <input type="search" placeholder="search for item" id="searchbar">
-   </label>
-    <button>Add product</button>
+    <div class="products-container" id="productsContainer"></div>
 
-</div>
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModal()"></div>
+    <div class="modal" id="addProductModal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Add Product</h2>
+            <form id="addProductForm">
+                <div class="form-group">
+                    <label>Product Name:</label>
+                    <input type="text" id="productName" name="productName" required>
+                </div>
+                <div class="form-group">
+                    <label>Price:</label>
+                    <input type="number" id="productPrice" name="productPrice" required>
+                </div>
+                <div class="form-group">
+                    <label>Description:</label>
+                    <textarea id="productDescription" name="productDescription" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Category:</label>
+                    <input type="text" id="productCategory" name="productCategory" required>
+                </div>
+                <div class="form-group">
+                    <label>Image URL:</label>
+                    <input type="url" id="productImage" name="productImage">
+                </div>
+                <div class="form-group">
+                    <label>Rating:</label>
+                    <input type="number" id="productRating" name="productRating" min="0" max="5">
+                </div>
+                <div class="form-group">
+                    <label>Stock:</label>
+                    <input type="number" id="productStock" name="productStock" required>
+                </div>
+                <button type="submit">Add Product</button>
+            </form>
+        </div>
+    </div>
 
-<div class="productscontainer" id="productscontainer">
-    
-</div>
-<script src="script.js"></script>
+    <script>
+        // Fetch and display products
+        async function fetchProducts() {
+            try {
+                const response = await fetch('http://localhost:4001/api/allproducts');
+                const data = await response.json();
+                displayProducts(data.products);
+            } catch (error) {
+                console.error('Error fetching products:', error);
+            }
+        }
+
+        // Add to cart functionality
+        async function addToCart(productId) {
+            try {
+                const userId = localStorage.getItem('userId'); // Assuming userId is stored in localStorage
+                if (!userId) {
+                    alert('Please log in to add products to the cart.');
+                    return;
+                }
+
+                const response = await fetch(`http://localhost:4001/api/cart/${userId}/${productId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ quantity: 1 })
+                });
+
+                if (response.ok) {
+                    alert('Product added to cart successfully!');
+                } else {
+                    alert('Failed to add product to cart.');
+                }
+            } catch (error) {
+                console.error('Error adding product to cart:', error);
+                alert('Error adding product to cart.');
+            }
+        }
+
+        // Display products in the grid
+        function displayProducts(products) {
+            const container = document.getElementById('productsContainer');
+            container.innerHTML = '';
+
+            products.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                productCard.innerHTML = `
+                    <img src="${product.image || 'https://via.placeholder.com/300'}" alt="${product.name}">
+                    <h3>${product.name}</h3>
+                    <p>$${product.price}</p>
+                    <p>${product.description}</p>
+                    <button class="add-to-cart" onclick="addToCart('${product._id}')">Add to Cart</button>
+                `;
+                container.appendChild(productCard);
+            });
+        }
+
+        // Modal handling
+        function openModal() {
+            document.getElementById('addProductModal').classList.add('show');
+            document.getElementById('modalOverlay').classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('addProductModal').classList.remove('show');
+            document.getElementById('modalOverlay').classList.remove('show');
+        }
+
+        // Form submission
+        document.getElementById('addProductForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const productName = document.getElementById('productName').value;
+            const productPrice = document.getElementById('productPrice').value;
+            const productDescription = document.getElementById('productDescription').value;
+            const productCategory = document.getElementById('productCategory').value;
+            const productImage = document.getElementById('productImage').value;
+            const productRating = document.getElementById('productRating').value;
+            const productStock = document.getElementById('productStock').value;
+
+            try {
+                const response = await fetch('http://localhost:4001/api/products', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        productname: productName,
+                        price: productPrice,
+                        description: productDescription,
+                        category: productCategory,
+                        image: productImage,
+                        rating: productRating,
+                        stock: productStock
+                    })
+                });
+
+                if (response.ok) {
+                    alert('Product added successfully!');
+                    closeModal();
+                    fetchProducts(); // Refresh the product list
+                } else {
+                    const error = await response.json();
+                    alert(`Failed to add product: ${error.message}`);
+                }
+            } catch (error) {
+                console.error('Error adding product:', error);
+                alert('An error occurred while adding the product.');
+            }
+        });
+
+        // Initial load
+        fetchProducts();
+
+        // Close modal on ESC key
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
 </body>
 </html>

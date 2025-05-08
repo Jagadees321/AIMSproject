@@ -4,11 +4,257 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        .place-order-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 10vh;
+        }
+
+        .cart-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            padding: 20px;
+        }
+
+        .cart-item {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+            height: auto; /* Allow dynamic height based on content */
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        .cart-item:hover {
+            transform: scale(1.05);
+        }
+
+        .cart-item img {
+            max-width: 100%;
+            height: auto; /* Maintain aspect ratio dynamically */
+            object-fit: contain; /* Ensure the image fits within the card without cropping */
+            margin-bottom: 10px;
+        }
+
+        .cart-item h3 {
+            font-size: 1.2em;
+            margin: 10px 0;
+        }
+
+        .cart-item p {
+            font-size: 1em;
+            color: #555;
+        }
+
+        .cart-item button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .cart-item button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Popup styles */
+        .popup {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .popup-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 300px;
+            text-align: center;
+        }
+
+        .popup h2 {
+            margin: 0 0 15px 0;
+            font-size: 1.5em;
+        }
+
+        .popup label {
+            display: block;
+            margin: 10px 0 5px 0;
+            text-align: left;
+        }
+
+        .popup input, .popup select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .popup button {
+            width: 48%;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .popup button[type="submit"] {
+            background-color: #007BFF;
+            color: white;
+        }
+
+        .popup button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        .popup button[type="button"] {
+            background-color: #ccc;
+        }
+
+        .popup button[type="button"]:hover {
+            background-color: #bbb;
+        }
+    </style>
 </head>
 <body>
     <h1>Your Cart</h1>
-<div id="cart-items"></div>
-<div id="cart-total"></div>
-<button onclick="placeOrder()">Place Order</button>
+    <div id="cartContainer" class="cart-container">
+        <!-- Cart items will be dynamically loaded here -->
+    </div>
+    <div id="cart-items"></div>
+    <div id="cart-total"></div>
+    <div class="place-order-container">
+        <button id="placeOrderButton" onclick="placeOrder(event)">Place Order</button>
+    </div>
+
+    <!-- Order Popup -->
+    <div id="orderPopup" class="popup" style="display: none;">
+        <div class="popup-content">
+            <h2>Place Order</h2>
+            <form id="orderForm">
+                <label for="shippingAddress">Shipping Address:</label>
+                <input type="text" id="shippingAddress" name="shippingAddress" required>
+
+                <label for="paymentMethod">Payment Method:</label>
+                <select id="paymentMethod" name="paymentMethod" required>
+                    <option value="cod">Cash on Delivery</option>
+                    <option value="online">Online Payment</option>
+                </select>
+
+                <button type="submit">Confirm Order</button>
+                <button type="button" onclick="closeOrderPopup()">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function placeOrder() {
+            // Show the order popup
+            document.getElementById('orderPopup').style.display = 'flex';
+        }
+
+        function closeOrderPopup() {
+            // Hide the order popup
+            document.getElementById('orderPopup').style.display = 'none';
+        }
+
+        document.getElementById('orderForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            // Handle order confirmation logic here
+            // For example, collect form data and send it to the server
+
+            // Close the popup after order is placed
+            closeOrderPopup();
+        });
+
+        function removeFromCart(productId) {
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (!user || !user._id) {
+                alert('Please log in to remove products from the cart.');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            fetch(`http://localhost:4001/api/cart/${user._id}/${productId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${user.token}`
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Product removed from cart successfully!');
+                    displayCart(); // Refresh the cart display
+                } else {
+                    return response.json().then(error => {
+                        alert(`Failed to remove product from cart: ${error.message}`);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error removing product from cart:', error);
+                alert('An error occurred while removing the product from the cart.');
+            });
+        }
+
+        function displayCart() {
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (!user) {
+                alert('Please log in to view your cart.');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            fetch(`http://localhost:4001/api/cart/${user._id}`, {
+                headers: {
+                    'Authorization': `Bearer ${user.token}`
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                const cartContainer = document.getElementById('cartContainer');
+                cartContainer.innerHTML = ''; // Clear previous content
+
+                data.carts.forEach(item => {
+                    const cartItem = document.createElement('div');
+                    cartItem.className = 'cart-item';
+                    cartItem.innerHTML = `
+                        <img src="${item.productid.image || 'https://via.placeholder.com/150'}" alt="${item.productid.productname}" class="cart-item-image">
+                        <h3>${item.productid.productname}</h3>
+                        <p>Price: $${item.productid.price}</p>
+                        <p>Quantity: ${item.quantity}</p>
+                        <button onclick="removeFromCart('${item.productid._id}')">Remove</button>
+                    `;
+                    cartContainer.appendChild(cartItem);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching cart items:', error);
+                alert('An error occurred while fetching the cart items.');
+            });
+        }
+
+        // Call displayCart on page load
+        document.addEventListener('DOMContentLoaded', displayCart);
+    </script>
 </body>
 </html>
