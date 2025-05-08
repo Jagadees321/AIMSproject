@@ -39,91 +39,15 @@
     link.addEventListener('click', handleNavigation);
   });
   
-  // Fetch and display products
-  async function fetchProducts() {
-       try {
-        let res=await fetch('http://localhost:3000/products');
-        let data=await res.json();
-       
-        return data;
-       } catch (error) {
-          console.log(error);
-          
-       }
-    
-  }
-  
-  // Add product to cart
-  function addToCart(id, title, price, thumbnail) {
-    let cart = JSON.parse(localStorage.getItem('cart')) || [];
-    const existingItem = cart.find(item => item.id === id);
-    if (existingItem) {
-      existingItem.quantity += 1;
-    } else {
-      cart.push({ id, title, price, thumbnail, quantity: 1 });
-    }
-    localStorage.setItem('cart', JSON.stringify(cart));
-    alert(`${title} added to cart!`);
-  }
-  
-  // Display cart items
-  function displayCart() {
-    const cart = JSON.parse(localStorage.getItem('cart')) || [];
-    const cartItems = document.getElementById('cart-items');
-    const cartTotal = document.getElementById('cart-total');
-  
-    if (cart.length > 0) {
-      cartItems.innerHTML = cart.map(item => `
-        <div class="cart-item">
-          <img src="${item.thumbnail}" alt="${item.title}">
-          <h3>${item.title}</h3>
-          <p>Price: $${item.price} x ${item.quantity}</p>
-          <p>Total: $${item.price * item.quantity}</p>
-        </div>
-      `).join('');
-  
-      const totalAmount = cart.reduce((total, item) => total + item.price * item.quantity, 0);
-      cartTotal.innerHTML = `<p>Total Amount: $${totalAmount}</p>`;
-    } else {
-      cartItems.innerHTML = '<p>Your cart is empty.</p>';
-    }
-  }
-  
-  // Place order
-  function placeOrder() {
-    const cart = JSON.parse(localStorage.getItem('cart')) || [];
-    if (cart.length > 0) {
-      const deliveryDate = new Date();
-      deliveryDate.setDate(deliveryDate.getDate() + 3);
-      alert(`Your items will be delivered by ${deliveryDate.toDateString()}`);
-      localStorage.removeItem('cart');
-      displayCart();
-    } else {
-      alert('Your cart is empty!');
-    }
-  }
+ 
+ 
   
   // Add product form
   function showAddProductForm() {
     document.getElementById('add-product-form').style.display = 'block';
   }
   
-  // Add product to JSON Server
-  async function addProduct() {
-    const title = document.getElementById('product-title').value;
-    const price = document.getElementById('product-price').value;
-    const description = document.getElementById('product-description').value;
-    const thumbnail = document.getElementById('product-thumbnail').value;
-  
-    await fetch('http://localhost:3000/products', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title, price, description, thumbnail })
-    });
-    alert('Product added successfully!');
-    fetchProducts();
-  }
-  
+ 
   // Check login status on page load
  
 
@@ -167,7 +91,6 @@ function showLogin() {
      let data=await res.json();
 
 
-     //user is exist or not if user is valid login success
 
      let user=data.find((ele)=>ele.email===email.value && ele.password===password.value);
 
